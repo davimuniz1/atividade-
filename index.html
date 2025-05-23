@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Solar com Fundo Estelar</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow: hidden;
+            /* Imagem de fundo do espaço */
+            background: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1000&auto=format') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+        
+        /* Overlay escuro para melhor contraste */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+        
+        /* Container principal */
+        .container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        /* Sistema Solar ampliado */
+        .solar-system {
+            position: relative;
+            width: 70%;
+            height: 100%;
+            transform: scale(1.2);
+            transform-origin: center center;
+        }
+        
+        /* Tabela de planetas ampliada */
+        .planet-info {
+            width: 30%;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.7);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            font-size: 1.5rem;
+            backdrop-filter: blur(5px);
+        }
+        
+        .planet-info h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #ff8c00;
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+        }
+        
+        .planet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1.6rem;
+        }
+        
+        .planet-table th, .planet-table td {
+            padding: 25px;
+            text-align: left;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .planet-table th {
+            background: rgba(255, 140, 0, 0.2);
+            font-size: 1.8rem;
+            letter-spacing: 1.5px;
+        }
+        
+        .color-sample {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 20px;
+            vertical-align: middle;
+            box-shadow: 0 0 8px rgba(255,255,255,0.4);
+        }
+        
+        /* Sol ampliado */
+        .sun {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #ffde00, #ff8c00);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 70px #ff8c00;
+            z-index: 10;
+        }
+        
+        /* Órbitas ampliadas */
+        .orbit {
+            position: absolute;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .orbit-1 { width: 150px; height: 150px; }
+        .orbit-2 { width: 220px; height: 220px; }
+        .orbit-3 { width: 310px; height: 310px; }
+        .orbit-4 { width: 400px; height: 400px; }
+        .orbit-5 { width: 500px; height: 500px; }
+        .orbit-6 { width: 600px; height: 600px; }
+        .orbit-7 { width: 700px; height: 700px; }
+        .orbit-8 { width: 800px; height: 800px; }
+        
+        /* Planetas ampliados */
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            transform-origin: center;
+            box-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+        
+        .mercury {
+            width: 12px;
+            height: 12px;
+            background: #a8a8a8;
+            top: 50%;
+            left: 50%;
+            margin-top: -6px;
+            margin-left: -6px;
+            animation: orbit 2.4s linear infinite;
+        }
+        
+        .venus {
+            width: 18px;
+            height: 18px;
+            background: #e6c229;
+            top: 50%;
+            left: 50%;
+            margin-top: -9px;
+            margin-left: -9px;
+            animation: orbit 6.2s linear infinite;
+        }
+        
+        .earth {
+            width: 20px;
+            height: 20px;
+            background: #2a6bcc;
+            top: 50%;
+            left: 50%;
+            margin-top: -10px;
+            margin-left: -10px;
+            animation: orbit 10s linear infinite;
+        }
+        
+        .mars {
+            width: 16px;
+            height: 16px;
+            background: #c1440e;
+            top: 50%;
+            left: 50%;
+            margin-top: -8px;
+            margin-left: -8px;
+            animation: orbit 18.8s linear infinite;
+        }
+        
+        .jupiter {
+            width: 45px;
+            height: 45px;
+            background: #d39c7e;
+            top: 50%;
+            left: 50%;
+            margin-top: -22.5px;
+            margin-left: -22.5px;
+            animation: orbit 118.6s linear infinite;
+        }
+        
+        .saturn {
+            width: 38px;
+            height: 38px;
+            background: #e7d9a9;
+            top: 50%;
+            left: 50%;
+            margin-top: -19px;
+            margin-left: -19px;
+            animation: orbit 294.6s linear infinite;
+        }
+        
+        .saturn::after {
+            content: '';
+            position: absolute;
+            width: 75px;
+            height: 12px;
+            background: rgba(210, 180, 140, 0.4);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(20deg);
+        }
+        
+        .uranus {
+            width: 32px;
+            height: 32px;
+            background: #b4e1e1;
+            top: 50%;
+            left: 50%;
+            margin-top: -16px;
+            margin-left: -16px;
+            animation: orbit 840s linear infinite;
+        }
+        
+        .neptune {
+            width: 30px;
+            height: 30px;
+            background: #5b5bff;
+            top: 50%;
+            left: 50%;
+            margin-top: -15px;
+            margin-left: -15px;
+            animation: orbit 1648s linear infinite;
+        }
+        
+        @keyframes orbit {
+            from {
+                transform: rotate(0deg) translateX(var(--orbit-radius)) rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg) translateX(var(--orbit-radius)) rotate(-360deg);
+            }
+        }
+        
+        .mercury { --orbit-radius: 75px; }
+        .venus { --orbit-radius: 110px; }
+        .earth { --orbit-radius: 155px; }
+        .mars { --orbit-radius: 200px; }
+        .jupiter { --orbit-radius: 250px; }
+        .saturn { --orbit-radius: 300px; }
+        .uranus { --orbit-radius: 350px; }
+        .neptune { --orbit-radius: 400px; }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .solar-system, .planet-info {
+                width: 100%;
+                transform: none;
+            }
+            
+            .planet-info {
+                height: auto;
+                padding: 25px;
+                font-size: 1.3rem;
+            }
+            
+            .planet-table {
+                font-size: 1.4rem;
+            }
+            
+            .planet-table th, .planet-table td {
+                padding: 15px;
+            }
+            
+            .color-sample {
+                width: 25px;
+                height: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="solar-system">
+            <div class="sun"></div>
+            
+            <div class="orbit orbit-1"></div>
+            <div class="orbit orbit-2"></div>
+            <div class="orbit orbit-3"></div>
+            <div class="orbit orbit-4"></div>
+            <div class="orbit orbit-5"></div>
+            <div class="orbit orbit-6"></div>
+            <div class="orbit orbit-7"></div>
+            <div class="orbit orbit-8"></div>
+            
+            <div class="planet mercury"></div>
+            <div class="planet venus"></div>
+            <div class="planet earth"></div>
+            <div class="planet mars"></div>
+            <div class="planet jupiter"></div>
+            <div class="planet saturn"></div>
+            <div class="planet uranus"></div>
+            <div class="planet neptune"></div>
+        </div>
+        
+        <div class="planet-info">
+            <h2>PLANETAS DO SISTEMA SOLAR</h2>
+            <table class="planet-table">
+                <thead>
+                    <tr>
+                        <th>PLANETA</th>
+                        <th>COR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>MERCÚRIO</td>
+                        <td><span class="color-sample" style="background: #a8a8a8;"></span> CINZA</td>
+                    </tr>
+                    <tr>
+                        <td>VÊNUS</td>
+                        <td><span class="color-sample" style="background: #e6c229;"></span> AMARELO-DOURADO</td>
+                    </tr>
+                    <tr>
+                        <td>TERRA</td>
+                        <td><span class="color-sample" style="background: #2a6bcc;"></span> AZUL</td>
+                    </tr>
+                    <tr>
+                        <td>MARTE</td>
+                        <td><span class="color-sample" style="background: #c1440e;"></span> VERMELHO</td>
+                    </tr>
+                    <tr>
+                        <td>JÚPITER</td>
+                        <td><span class="color-sample" style="background: #d39c7e;"></span> MARROM-CLARO</td>
+                    </tr>
+                    <tr>
+                        <td>SATURNO</td>
+                        <td><span class="color-sample" style="background: #e7d9a9;"></span> AMARELO-PÁLIDO</td>
+                    </tr>
+                    <tr>
+                        <td>URANO</td>
+                        <td><span class="color-sample" style="background: #b4e1e1;"></span> AZUL-CLARO</td>
+                    </tr>
+                    <tr>
+                        <td>NETUNO</td>
+                        <td><span class="color-sample" style="background: #5b5bff;"></span> AZUL-ESCURO</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
